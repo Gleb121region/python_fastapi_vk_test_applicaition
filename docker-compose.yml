@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+
+  gateway:
+    image: gleb/k-gateway:latest
+    container_name: gateway_container
+    ports:
+      - "8000:8000"
+    command: sh -c "python3 main.py"
+    build:
+      context: gateway
+      dockerfile: Dockerfile
+    volumes:
+      - ./gateway:/app
+    depends_on:
+      - authorization
+
+  authorization:
+    image: gleb/k-authorization:latest
+    container_name: authorization_micro_service
+    ports:
+      - "8001:8001"
+    command: sh -c "python3 main.py"
+    build:
+      context: authorization
+      dockerfile: Dockerfile
+      args:
+        - ENV_FILE=.env
+    env_file:
+      - authorization/.env
+    volumes:
+      - ./authorization:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      POSTGRES_USER: gleb
+      POSTGRES_PASSWORD: stringst
+      POSTGRES_DB: authorization
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  notes:
+    image: gleb/k-notes:latest
+    container_name: notes_micro_service
+    ports:
+      - "8002:8002"
+    command: sh -c "python3 main.py"
+    build:
+      context: notes
+      dockerfile: Dockerfile
+      args:
+        - ENV_FILE=.env
+    env_file:
+      - notes/.env
+    volumes:
+      - ./notes:/app
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    container_name: database
+    environment:
+      POSTGRES_USER: gleb
+      POSTGRES_PASSWORD: stringst
+      POSTGRES_DB: notes
+    ports:
+       - "61828:5432"
+    volumes:
+      - postgres_data_note:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
+  postgres_data_note:

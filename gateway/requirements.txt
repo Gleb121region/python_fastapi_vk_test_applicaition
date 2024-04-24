@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+cql
+cassandra-driver
+httpx
+pydantic
+pydantic[email]
+pydantic==1.10.15
+python-multipart
