@@ -4,8 +4,8 @@ from pydantic import BaseModel, constr
 
 
 class NoteBase(BaseModel):
-    title: constr(max_length=100)
-    content: constr(max_length=1000)
+    title: constr(min_length=1, max_length=100)
+    content: constr(min_length=1, max_length=1000)
 
 
 class NoteCreate(NoteBase):
