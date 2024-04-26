@@ -1,6 +1,8 @@
+from datetime import datetime
 from typing import Optional
 
-from pydantic import EmailStr, BaseModel
+from pydantic import BaseModel, constr
+from pydantic import EmailStr
 
 
 class UserRegistration(BaseModel):
@@ -41,25 +43,31 @@ class UserPatch(BaseModel):
     is_verified: bool = True
 
 
-from datetime import datetime
-
-from pydantic import BaseModel
-
-
-class NoteCreate(BaseModel):
-    title: str
-    content: str
+class NoteBase(BaseModel):
+    title: constr(max_length=100)
+    content: constr(max_length=1000)
 
 
-class NoteUpdate(BaseModel):
-    title: str
-    content: str
+class NoteCreate(NoteBase):
+    pass
 
 
-class NoteResponse(BaseModel):
+class NoteUpdate(NoteBase):
+    pass
+
+
+class NoteReadUnauthorized(NoteBase):
+    author_login: str
+
+
+class NoteRead(NoteReadUnauthorized):
+    is_owner: bool
+
+
+class NoteResponse(NoteBase):
     note_id: int
-    title: str
-    content: str
     creation_date: datetime
     author_id: str
-    is_own: bool
+
+    class Config:
+        orm_mode = True

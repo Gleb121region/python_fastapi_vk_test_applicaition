@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from database import create_db_and_tables
-from verify_handler import router as verify_router
+from notes_router import router as verify_router
 
 app = FastAPI()
 

@@ -2,8 +2,9 @@ from fastapi import FastAPI
 
 from database import create_db_and_tables
 from schemas import UserRead, UserCreate, UserUpdate
+from user_router import router as user_router
 from users import fastapi_users, auth_backend
-from verify_handler import router as verify_router
+from verify_router import router as verify_router
 
 app = FastAPI()
 
@@ -37,8 +38,11 @@ app.include_router(
     verify_router
 )
 
+app.include_router(
+    user_router
+)
+
 
 @app.on_event("startup")
 async def on_startup():
-    # Not needed if you setup a migration system like Alembic
     await create_db_and_tables()

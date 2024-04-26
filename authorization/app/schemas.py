@@ -3,8 +3,7 @@ import uuid
 from typing import Optional
 
 from fastapi_users import schemas
-from pydantic import EmailStr, Field
-from pydantic import validator
+from pydantic import EmailStr, Field, validator
 
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
